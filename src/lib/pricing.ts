@@ -45,7 +45,7 @@ export const PRODUCTS: Product[] = [
     id: "p4",
     title: "MEIA ENTRADA",
     description: "PCD, Idosos, Crianças 4-13 anos, Estudantes e Professores SP",
-    image: "https://images.unsplash.com/photo-1504173010649-33f973c1b9d9?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1547407139-3c921a66005c?q=80&w=800&auto=format&fit=crop",
     basePrice: 59.90,
     isCombo: false,
     pricingRules: {

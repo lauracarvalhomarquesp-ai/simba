@@ -17,6 +17,7 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
           alt={product.title}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
+          unoptimized
         />
         {product.isCombo && (
           <div className="absolute right-2 top-2 rounded-full bg-safari-orange px-3 py-1 text-xs font-bold text-white shadow-sm">
