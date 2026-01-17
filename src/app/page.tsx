@@ -1,33 +1,77 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { ProductCard } from "@/components/product-card";
 import { PRODUCTS } from "@/lib/pricing";
-import { Product } from "@/types";
+import { DatePicker } from "@/components/date-picker";
+import { CartSummary } from "@/components/cart-summary";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Calendar } from "lucide-react";
 
 export default function Home() {
-  const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const datePickerRef = useRef<HTMLDivElement>(null);
 
-  const handleProductSelect = (product: Product) => {
-    router.push(`/product/${product.id}`);
+  const handleDateRequired = () => {
+    if (datePickerRef.current) {
+      datePickerRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Optional: Add a shake animation or highlight effect
+    }
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-safari-beige/30">
+    <div className="flex min-h-screen flex-col bg-safari-beige/30 pb-24">
       <Header />
       <main className="flex-1">
         <Hero />
         
-        <section className="container mx-auto px-4 py-16">
-          <div className="mb-12 text-center">
+        <section className="container mx-auto px-4 py-8 -mt-8 relative z-10">
+          <div 
+            ref={datePickerRef}
+            className="bg-white rounded-xl shadow-lg p-6 border border-safari-brown/10"
+          >
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="text-center md:text-left">
+                <h2 className="text-xl font-bold text-safari-dark flex items-center justify-center md:justify-start gap-2">
+                  <Calendar className="h-6 w-6 text-safari-orange" />
+                  Quando você quer nos visitar?
+                </h2>
+                <p className="text-gray-600 mt-1">
+                  Selecione uma data para ver os preços e disponibilidade.
+                </p>
+              </div>
+              
+              <div className="w-full md:w-auto flex justify-center">
+                 <div className="bg-gray-50 p-2 rounded-lg border">
+                    <DatePicker 
+                      selected={selectedDate} 
+                      onSelect={setSelectedDate} 
+                      className="border-0 shadow-none"
+                    />
+                 </div>
+              </div>
+            </div>
+            {selectedDate && (
+              <div className="mt-4 text-center md:text-right border-t pt-4">
+                <p className="text-safari-green font-medium">
+                  Data selecionada: <span className="font-bold">{format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}</span>
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="container mx-auto px-4 py-8">
+          <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold text-safari-dark sm:text-4xl">
               Escolha sua Aventura
             </h2>
             <p className="mt-4 text-lg text-gray-600">
-              Selecione o ingresso ideal para você e sua família
+              Ingressos e combos especiais para você
             </p>
           </div>
 
@@ -36,17 +80,17 @@ export default function Home() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onSelect={handleProductSelect}
+                selectedDate={selectedDate}
+                onSelectDateRequired={handleDateRequired}
               />
             ))}
           </div>
         </section>
 
-        <section className="bg-white py-16">
+        <section className="bg-white py-16 mt-8">
           <div className="container mx-auto px-4">
             <div className="grid gap-8 md:grid-cols-2 items-center">
               <div className="relative h-[400px] overflow-hidden rounded-2xl">
-                 {/* Placeholder for map or park image */}
                  <div className="absolute inset-0 bg-safari-green/10 flex items-center justify-center">
                     <span className="text-safari-green font-bold">Mapa do Parque</span>
                  </div>
@@ -74,6 +118,7 @@ export default function Home() {
         </section>
       </main>
       <Footer />
+      <CartSummary />
     </div>
   );
 }
